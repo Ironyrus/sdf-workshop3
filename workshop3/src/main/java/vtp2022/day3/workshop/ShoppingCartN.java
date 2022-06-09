@@ -18,6 +18,9 @@ C:\Users\vans_\sdf-workshop1\sdf-workshop2>mvn compile
 /*
  vans_@LAPTOP-AS886SBL MINGW64 ~/VISA NUS-ISS VTTP/sdf-workshop3/workshop3 (main)
 $ mvn compile exec:java -Dexec.mainClass="vtp2022.day3.workshop.ShoppingCartN"
+
+mvn compile exec:java -Dexec.mainClass="vtp2022.day3.workshop.ShoppingCartN" -Dexec.args="cartdb" (ADD IN ARGUMENT CARTDB)
+
 */
 
 import java.util.*;
@@ -44,12 +47,15 @@ public class ShoppingCartN {
         int delIndex;
         boolean stop = false;
         String userPath = "";
+        String argss;
 
-        String argss = "cartdb";
-        if (!(argss == null)) {
+        if (args.length > 0)
+            argss = args[0];
+        else
+            argss = "db"; //argss should be "db" if no argument provided
+
         //CREATE NEW DIRECTORY
-        String dirName = "cartdb";
-        Path newDir = Paths.get(dirName);
+        Path newDir = Paths.get(argss);
         if(!Files.exists(newDir)) {
             try {
                 Files.createDirectories(newDir);
@@ -60,9 +66,7 @@ public class ShoppingCartN {
         } else {
             System.out.println("Directory " + newDir + " already exists!");
         }
-        } else {
-            argss = "db";
-        }
+
         //END CREATING NEW DIRECTORY
 
         while(!stop) {
@@ -164,6 +168,8 @@ public class ShoppingCartN {
                             count++;
                     }
                     //System.out.println(sbobj.toString()); APPLEEGGSBABANAS
+                    brobj.close();
+
                     frobj.close();
                     frobj2.close();
 
@@ -187,6 +193,7 @@ public class ShoppingCartN {
                             } else {
                                 System.out.println("Cart is empty. Nothing to save.");
                             }
+                            writer.flush();
                             writer.close();                            
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -202,7 +209,8 @@ public class ShoppingCartN {
                     for (String item : userCart) {
                         System.out.println(item);                        
                     }
-
+                    System.out.println(terms[0]);
+                    System.out.println(terms[1]);
                     // try {
                     //     File userFile = new File(userPath);
                     //     FileInputStream fin = new FileInputStream(userFile);
@@ -222,7 +230,7 @@ public class ShoppingCartN {
                 case "users":
                     String name = "";
                     int count = 1;
-                    File[] dir = new File("./cartdb/").listFiles();
+                    File[] dir = new File("./" + argss + "/").listFiles();
                     if (dir.length == 0)
                         System.out.println("No users registered.");
                     else {
